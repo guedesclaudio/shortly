@@ -1,5 +1,6 @@
 import STATUS_CODE from "../enums/statusCode.enum.js"
 import {schemaSignup, schemaSignin} from "../schemas/auth.schema.js"
+import connection from "../database/database.js"
 
 async function validateCreateUser(req, res, next) {
 
@@ -11,6 +12,9 @@ async function validateCreateUser(req, res, next) {
     }
 
     try {
+
+        const users = await connection.query(`SELECT * FROM users;`)
+        return res.send(users.rows)
         
     } catch (error) {
         console.error(error)
