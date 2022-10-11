@@ -20,4 +20,12 @@ async function createShortUrl(req, res) {
     }
 }
 
-export {createShortUrl}
+async function listUrlsById(req, res) {
+    
+    const linkData = res.locals.linkData
+    delete linkData.visitCount
+    delete linkData.createdAt
+    res.status(STATUS_CODE.OK).send(linkData)
+}
+
+export {createShortUrl, listUrlsById}

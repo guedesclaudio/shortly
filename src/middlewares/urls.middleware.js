@@ -1,3 +1,4 @@
+import connection from "../database/database.js"
 import STATUS_CODE from "../enums/statusCode.enum.js"
 import {schemaUrl} from "../schemas/url.schema.js"
 
@@ -18,6 +19,28 @@ async function validateCreateShortUrl(req, res, next) {
     next()
 }
 
+async function validateListUrlsById(req, res, next) {
+
+    const {id} = req.params
+
+    if (!id || isNaN(id)) {
+        return res.sendStatus(STATUS_CODE.NOT_FOUND)
+    }
+
+    try {
+        const link = (await connection.query('SELECT * FROM links WHERE id = $1;', [id])).rows[0]
+        if (!link) {
+            return res.sendStatus(STATUS_CODE.NOT_FOUND)
+        }
+
+        res.locals.linkData = link
+        next()
+    } catch (error) {
+        console.error(error)
+        res.sendStatus(STATUS_CODE.SERVER_ERROR)
+    }
+}
+
 function checkUrl(string) {
     try {
         let url = new URL(string)
@@ -27,4 +50,4 @@ function checkUrl(string) {
     }
 }
 
-export {validateCreateShortUrl}
+export {validateCreateShortUrl, validateListUrlsById}
