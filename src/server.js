@@ -5,6 +5,7 @@ dotenv.config()
 
 import AuthRouter from "./routers/auth.router.js"
 import UrlsRouter from "./routers/urls.router.js"
+import UserRouter from "./routers/user.router.js"
 
 const server = express()
 const PORT = process.env.PORT
@@ -14,6 +15,7 @@ server
     .use(express.json())
     .use(AuthRouter)
     .use(UrlsRouter)
+    .use(UserRouter)
 
 server.get("/status", (req, res) => {
     res.send("server it's on")

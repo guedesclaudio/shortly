@@ -3,7 +3,7 @@ import {validateToken} from "../middlewares/token.middleware.js"
 import { validateCreateShortUrl, validateListUrlsById , validateOpenShortUrl, validateDeleteUrl} from "../middlewares/urls.middleware.js"
 import { createShortUrl, deleteUrl, listUrlsById , openShortUrl} from "../controllers/url.controller.js"
 
-const router =  express.Router()
+const router = express.Router()
 
 router.post("/urls/shorten", validateToken, validateCreateShortUrl, createShortUrl)
 router.get("/urls/:id", validateListUrlsById, listUrlsById)
