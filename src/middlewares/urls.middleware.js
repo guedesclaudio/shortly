@@ -41,6 +41,57 @@ async function validateListUrlsById(req, res, next) {
     }
 }
 
+async function validateOpenShortUrl(req, res, next) {
+
+    const {shortUrl} = req.params
+
+    if (!shortUrl) {
+        return res.sendStatus(STATUS_CODE.NOT_FOUND)
+    }
+
+    try {
+        const link = (await connection.query('SELECT * FROM links WHERE "shortUrl" = $1;', [shortUrl])).rows[0]
+
+        if (!link) {
+            return res.sendStatus(STATUS_CODE.NOT_FOUND)
+        }
+
+        res.locals.linkData = link
+        next()
+
+    } catch (error) {
+        console.error(error)
+        res.sendStatus(STATUS_CODE.SERVER_ERROR)
+    }
+}
+
+async function validateDeleteUrl(req, res, next) {
+
+    const {id} = req.params
+    const userId = res.locals.userId
+
+    try {
+
+        const link = (await connection.query('SELECT * FROM links WHERE id = $1;', [id])).rows[0]
+
+        if (!link) {
+            return res.sendStatus(STATUS_CODE.NOT_FOUND)
+        }
+
+        const userLink = (await connection.query('SELECT * FROM "usersLinks" WHERE "userId" = $1 AND "linkId" = $2;', [userId, link.id])).rows[0]
+
+        if (!userLink) {
+            return res.sendStatus(STATUS_CODE.UNAUTHORIZED)
+        }
+        res.locals.userLinkData = {link, userId}
+        next()
+        
+    } catch (error) {
+        console.error(error)
+        res.sendStatus(STATUS_CODE.SERVER_ERROR)
+    }
+}
+
 function checkUrl(string) {
     try {
         let url = new URL(string)
@@ -50,4 +101,4 @@ function checkUrl(string) {
     }
 }
 
-export {validateCreateShortUrl, validateListUrlsById}
+export {validateCreateShortUrl, validateListUrlsById, validateOpenShortUrl, validateDeleteUrl}

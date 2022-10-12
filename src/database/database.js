@@ -14,7 +14,7 @@ const connection = new Pool({
 });*/
 
 const databaseConfig = {
-  connectionString: process.env.DATABASE_URL,
+  connectionString: process.env.DATABASE_URL_DEV,
   ssl: {
       rejectUnauthorized: false
   }
