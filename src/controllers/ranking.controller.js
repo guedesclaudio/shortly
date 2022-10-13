@@ -17,14 +17,13 @@ async function listRanking(req, res) {
         JOIN links
             ON "usersLinks"."linkId" = links.id
         GROUP BY users.id
-        ORDER BY "visitCount" ASC
+        ORDER BY "visitCount" DESC
         LIMIT 10;
         `)).rows
 
         res.send(ranking)
         
     } catch (error) {
-        console.error(error)
         res.sendStatus(STATUS_CODE.SERVER_ERROR)
     }
 }

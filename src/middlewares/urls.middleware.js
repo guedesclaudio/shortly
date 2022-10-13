@@ -36,7 +36,6 @@ async function validateListUrlsById(req, res, next) {
         res.locals.linkData = link
         next()
     } catch (error) {
-        console.error(error)
         res.sendStatus(STATUS_CODE.SERVER_ERROR)
     }
 }
@@ -60,7 +59,6 @@ async function validateOpenShortUrl(req, res, next) {
         next()
 
     } catch (error) {
-        console.error(error)
         res.sendStatus(STATUS_CODE.SERVER_ERROR)
     }
 }
@@ -87,7 +85,6 @@ async function validateDeleteUrl(req, res, next) {
         next()
         
     } catch (error) {
-        console.error(error)
         res.sendStatus(STATUS_CODE.SERVER_ERROR)
     }
 }

@@ -23,7 +23,6 @@ async function validateCreateUser(req, res, next) {
         next()
 
     } catch (error) {
-        console.error(error)
         res.send(STATUS_CODE.SERVER_ERROR)
     }
 }
@@ -55,7 +54,6 @@ async function validateLoginUser(req, res, next) {
         next()
 
     } catch (error) {
-        console.error(error)
         res.send(STATUS_CODE.SERVER_ERROR)
     }
 }

@@ -15,7 +15,6 @@ async function createShortUrl(req, res) {
         res.status(STATUS_CODE.CREATED).send({shortUrl})
 
     } catch (error) {
-        console.error(error)
         res.sendStatus(STATUS_CODE.SERVER_ERROR)
     }
 }
@@ -35,10 +34,9 @@ async function openShortUrl(req, res) {
 
     try {
         await connection.query('UPDATE links SET "visitCount" = $1 WHERE id = $2', [visitCount, linkData.id])
-        return res.redirect(linkData.url)
-        res.send(linkData.url)
+        res.redirect(linkData.url)
+        
     } catch (error) {
-        console.error(error)
         res.sendStatus(STATUS_CODE.SERVER_ERROR)
     }
 }
@@ -46,7 +44,6 @@ async function openShortUrl(req, res) {
 async function deleteUrl(req, res) {
 
     const {link, userId} = res.locals.userLinkData
-    //return console.log(link.id)
 
     try {
         await connection.query('DELETE FROM "usersLinks" WHERE "userId" = $1 AND "linkId" = $2;', [userId,link.id])
@@ -54,7 +51,6 @@ async function deleteUrl(req, res) {
         res.sendStatus(204)
 
     } catch (error) {
-        console.error(error)
         res.sendStatus(STATUS_CODE.SERVER_ERROR)
     }
 

@@ -20,6 +20,8 @@ async function getUserData(req, res) {
             WHERE users.id = $1
             GROUP BY users.id;`, [userId])).rows[0]
 
+        const {id, name, visitCount} = userData
+
         const links = (
             await connection.query(`
             SELECT 
@@ -30,10 +32,9 @@ async function getUserData(req, res) {
             JOIN links
                 ON "usersLinks"."linkId" = links.id
             WHERE users.id = $1;`, [userId])).rows
-        res.send({userData, shorteneUrls: links})
+        res.send({id, name, visitCount, shorteneUrls: links})
         
     } catch (error) {
-        console.error(error)
         res.sendStatus(STATUS_CODE.SERVER_ERROR)
     }
 }

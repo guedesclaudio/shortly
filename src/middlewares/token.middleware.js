@@ -19,7 +19,6 @@ async function validateToken(req, res, next) {
         res.locals.userId = session.userId
         next()
     } catch (error) {
-        console.error(error)
         res.sendStatus(STATUS_CODE.SERVER_ERROR)
     }
 }

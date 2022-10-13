@@ -14,7 +14,6 @@ async function createUser(req, res) {
         res.sendStatus(STATUS_CODE.CREATED)
         
     } catch (error) {
-        console.error(error)
         res.sendStatus(STATUS_CODE.SERVER_ERROR)
     }
 }
@@ -29,7 +28,6 @@ async function loginUser(req, res) {
         res.status(STATUS_CODE.OK).send({"token": token})
 
     } catch (error) {
-        console.error(error)
         res.send(STATUS_CODE.SERVER_ERROR)
     }
 }
