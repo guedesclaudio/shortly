@@ -40,4 +40,20 @@ function encryptPassword(req) {
     return encryptedPassword
 }
 
+async function checkSessionTime(req, res) {
+
+    const sessions = (await connection.query("SELECT * FROM sessions;")).rows
+    const today = new Date().getTime()
+
+    sessions.filter(async value => {
+        const tokenDate = new Date(value.createdAt).getTime()
+        console.log(today, tokenDate)
+
+        if (today - tokenDate >= 7200000) {
+            await connection.query("DELETE FROM sessions WHERE id = $1;",[value.id])
+        }
+    })
+}
+//setInterval(checkSessionTime, 5000)
+
 export {createUser, loginUser}
