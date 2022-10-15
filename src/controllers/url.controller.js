@@ -1,5 +1,4 @@
 import STATUS_CODE from "../enums/statusCode.enum.js"
-import connection from "../database/database.js"
 import {nanoid} from "nanoid"
 import { insertUrl, queryLinkId, updateVisitCount, insertUsersLinks, deleteUsersLinks, deleteUrlById} from "../repositories/urls.repository.js"
 
