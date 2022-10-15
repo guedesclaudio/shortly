@@ -1,6 +1,7 @@
 import STATUS_CODE from "../enums/statusCode.enum.js"
 import connection from "../database/database.js"
 import {nanoid} from "nanoid"
+import { insertUrl, queryLinkId, updateVisitCount, insertUsersLinks, deleteUsersLinks, deleteUrlById} from "../repositories/urls.repository.js"
 
 async function createShortUrl(req, res) {
 
@@ -9,12 +10,13 @@ async function createShortUrl(req, res) {
     const shortUrl = nanoid(8)
 
     try {
-        await connection.query('INSERT INTO links (url, "shortUrl") VALUES ($1, $2);', [url, shortUrl])
-        const linkId = (await connection.query('SELECT * FROM links WHERE "shortUrl" = $1;', [shortUrl])).rows[0].id
-        await connection.query('INSERT INTO "usersLinks" ("userId", "linkId") VALUES ($1, $2);', [userId, linkId])
+        await insertUrl(url, shortUrl)
+        const linkId = await queryLinkId(shortUrl)
+        await insertUsersLinks(userId, linkId)
         res.status(STATUS_CODE.CREATED).send({shortUrl})
 
     } catch (error) {
+        console.error(error)
         res.sendStatus(STATUS_CODE.SERVER_ERROR)
     }
 }
@@ -33,7 +35,7 @@ async function openShortUrl(req, res) {
     const visitCount = linkData.visitCount + 1
 
     try {
-        await connection.query('UPDATE links SET "visitCount" = $1 WHERE id = $2', [visitCount, linkData.id])
+        await updateVisitCount(visitCount, linkData.id)
         res.redirect(linkData.url)
         
     } catch (error) {
@@ -42,18 +44,18 @@ async function openShortUrl(req, res) {
 }
 
 async function deleteUrl(req, res) {
-
+    
     const {link, userId} = res.locals.userLinkData
-
+    
     try {
-        await connection.query('DELETE FROM "usersLinks" WHERE "userId" = $1 AND "linkId" = $2;', [userId,link.id])
-        await connection.query('DELETE FROM links WHERE id = $1;', [link.id])
+        await deleteUsersLinks(userId, link.id)
+        await deleteUrlById(link.id)
         res.sendStatus(204)
 
     } catch (error) {
+        console.error(error)
         res.sendStatus(STATUS_CODE.SERVER_ERROR)
     }
-
 }
 
 export {createShortUrl, listUrlsById, openShortUrl, deleteUrl}

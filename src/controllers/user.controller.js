@@ -3,7 +3,7 @@ import STATUS_CODE from "../enums/statusCode.enum.js"
 
 async function getUserData(req, res) {
     
-    const userId = res.locals.userId
+    const user = res.locals.user
 
     try {
         const userData = (
@@ -18,7 +18,11 @@ async function getUserData(req, res) {
             JOIN links
                 ON "usersLinks"."linkId" = links.id
             WHERE users.id = $1
-            GROUP BY users.id;`, [userId])).rows[0]
+            GROUP BY users.id;`, [user.id])).rows[0]
+        
+        if (!userData) {
+            return res.send({id: user.id, name: user.name, visitCount: 0, shortenedUrls: []})
+        }
 
         const {id, name, visitCount} = userData
 
@@ -31,10 +35,11 @@ async function getUserData(req, res) {
                 ON users.id = "usersLinks"."userId"
             JOIN links
                 ON "usersLinks"."linkId" = links.id
-            WHERE users.id = $1;`, [userId])).rows
-        res.send({id, name, visitCount, shorteneUrls: links})
+            WHERE users.id = $1;`, [user.id])).rows
+        res.send({id, name, visitCount, shortenedUrls: links})
         
     } catch (error) {
+        console.error(error)
         res.sendStatus(STATUS_CODE.SERVER_ERROR)
     }
 }

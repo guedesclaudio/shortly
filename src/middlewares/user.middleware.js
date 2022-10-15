@@ -8,14 +8,15 @@ async function validateGetUserData(req, res, next) {
     try {
 
         const user = (await connection.query('SELECT * FROM users WHERE id = $1;', [userId])).rows[0]
-
+       
         if (!user) {
             return res.sendStatus(STATUS_CODE.NOT_FOUND)
         }
-        res.locals.userId = userId
+        res.locals.user = user
         next()
         
     } catch (error) {
+        console.error(error)
         res.sendStatus(STATUS_CODE.SERVER_ERROR)
     }
 }

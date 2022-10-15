@@ -1,5 +1,4 @@
 import STATUS_CODE from "../enums/statusCode.enum.js"
-import connection from "../database/database.js"
 import bcrypt from "bcrypt"
 import {v4 as uuid} from "uuid"
 import { deleteSession, insertSession, insertUser, querySessions } from "../repositories/auth.repository.js"
