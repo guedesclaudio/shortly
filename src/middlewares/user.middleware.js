@@ -1,6 +1,5 @@
-import connection from "../database/database.js"
 import STATUS_CODE from "../enums/statusCode.enum.js"
-import { queryUserById } from "../repositories/user.repositories.js"
+import { queryUserById } from "../repositories/user.repository.js"
 
 async function validateGetUserData(req, res, next) {
 

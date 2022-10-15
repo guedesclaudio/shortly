@@ -15,7 +15,6 @@ async function createShortUrl(req, res) {
         res.status(STATUS_CODE.CREATED).send({shortUrl})
 
     } catch (error) {
-        console.error(error)
         res.sendStatus(STATUS_CODE.SERVER_ERROR)
     }
 }
@@ -52,7 +51,6 @@ async function deleteUrl(req, res) {
         res.sendStatus(204)
 
     } catch (error) {
-        console.error(error)
         res.sendStatus(STATUS_CODE.SERVER_ERROR)
     }
 }

@@ -1,6 +1,5 @@
-import connection from "../database/database.js"
 import STATUS_CODE from "../enums/statusCode.enum.js"
-import { queryLinks, queryUserData } from "../repositories/user.repositories.js"
+import { queryLinks, queryUserData } from "../repositories/user.repository.js"
 
 async function getUserData(req, res) {
     
@@ -19,7 +18,6 @@ async function getUserData(req, res) {
         res.send({id, name, visitCount, shortenedUrls: links})
         
     } catch (error) {
-        console.error(error)
         res.sendStatus(STATUS_CODE.SERVER_ERROR)
     }
 }

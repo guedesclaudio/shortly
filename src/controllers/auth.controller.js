@@ -47,7 +47,6 @@ async function checkSessionTime(req, res) {
 
     sessions.filter(async value => {
         const tokenDate = new Date(value.createdAt).getTime()
-        console.log(today, tokenDate)
 
         if (today - tokenDate >= 7200000) {
             await deleteSession(value.id)
