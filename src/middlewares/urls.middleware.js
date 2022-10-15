@@ -1,5 +1,6 @@
 import connection from "../database/database.js"
 import STATUS_CODE from "../enums/statusCode.enum.js"
+import { queryShortUrl, queryUrl, queryUsersLinks } from "../repositories/urls.repository.js"
 import {schemaUrl} from "../schemas/url.schema.js"
 
 async function validateCreateShortUrl(req, res, next) {
@@ -28,7 +29,7 @@ async function validateListUrlsById(req, res, next) {
     }
 
     try {
-        const link = (await connection.query('SELECT * FROM links WHERE id = $1;', [id])).rows[0]
+        const link = await queryUrl(id)
         if (!link) {
             return res.sendStatus(STATUS_CODE.NOT_FOUND)
         }
@@ -49,7 +50,7 @@ async function validateOpenShortUrl(req, res, next) {
     }
 
     try {
-        const link = (await connection.query('SELECT * FROM links WHERE "shortUrl" = $1;', [shortUrl])).rows[0]
+        const link = await queryShortUrl(shortUrl)
 
         if (!link) {
             return res.sendStatus(STATUS_CODE.NOT_FOUND)
@@ -68,16 +69,19 @@ async function validateDeleteUrl(req, res, next) {
     const {id} = req.params
     const userId = res.locals.userId
 
-    try {
+    if (isNaN(id)) {
+        return res.sendStatus(STATUS_CODE.NOT_FOUND)
+    }
 
-        const link = (await connection.query('SELECT * FROM links WHERE id = $1;', [id])).rows[0]
+    try {
+        const link = await queryUrl(id)
 
         if (!link) {
             return res.sendStatus(STATUS_CODE.NOT_FOUND)
         }
 
-        const userLink = (await connection.query('SELECT * FROM "usersLinks" WHERE "userId" = $1 AND "linkId" = $2;', [userId, link.id])).rows[0]
-
+        const userLink = await queryUsersLinks(userId, link.id)
+    
         if (!userLink) {
             return res.sendStatus(STATUS_CODE.UNAUTHORIZED)
         }

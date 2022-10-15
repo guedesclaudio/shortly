@@ -1,7 +1,7 @@
 import STATUS_CODE from "../enums/statusCode.enum.js"
 import {schemaSignup, schemaSignin} from "../schemas/auth.schema.js"
-import connection from "../database/database.js"
 import bcrypt from "bcrypt"
+import {queryUser} from "../repositories/auth.repository.js"
 
 
 async function validateCreateUser(req, res, next) {
@@ -15,8 +15,8 @@ async function validateCreateUser(req, res, next) {
     }
 
     try {
-        const user = (await connection.query(`SELECT * FROM users WHERE email = $1;`, [email])).rows[0]
-
+        const user = await queryUser(email)
+        
         if (user) {
             return res.sendStatus(STATUS_CODE.CONFLICT)
         }
@@ -39,7 +39,7 @@ async function validateLoginUser(req, res, next) {
 
     try {
 
-        const user = (await connection.query(`SELECT * FROM users WHERE email = $1;`, [email])).rows[0]
+        const user = await queryUser(email)
 
         if (!user ) {
             return res.sendStatus(STATUS_CODE.UNAUTHORIZED)
