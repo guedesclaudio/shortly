@@ -6,12 +6,15 @@ import {queryUser} from "../repositories/auth.repository.js"
 
 async function validateCreateUser(req, res, next) {
 
-    const {email} = req.body
+    const {email, confirmPassword} = req.body
     const {error} = schemaSignup.validate(req.body, {abortEarly: false})
 
     if (error) {
         const errors = error.details.map(value => value.message) 
         return res.status(STATUS_CODE.UNPROCESSABLE).send(errors)
+    }
+    if (!confirmPassword) {
+        return res.status(STATUS_CODE.UNPROCESSABLE).send("\"confirmPassword\" is required")
     }
 
     try {
